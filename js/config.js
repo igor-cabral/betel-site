@@ -11,5 +11,5 @@ window.BETEL_CONFIG = {
   // Endereço de um serviço/backend que receba o formulário (POST JSON).
   // Enquanto estiver vazio, o formulário NÃO envia nada e avisa isso ao visitante.
   // Veja o README (seção "Formulário") para as opções recomendadas.
-  formEndpoint: ""
+formEndpoint: "https://betel-site-ilc.661207.workers.dev"
 };
