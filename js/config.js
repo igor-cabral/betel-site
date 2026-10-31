@@ -8,8 +8,8 @@ window.BETEL_CONFIG = {
   whatsapp: "5547988012992",
   whatsappLabel: "(47) 98801-2992",
 
-  // Endereço de um serviço/backend que receba o formulário (POST JSON).
-  // Enquanto estiver vazio, o formulário NÃO envia nada e avisa isso ao visitante.
-  // Veja o README (seção "Formulário") para as opções recomendadas.
-formEndpoint: "https://betel-site-ilc.661207.workers.dev"
+  // Endereço do Cloudflare Worker que recebe o formulário (POST JSON) e envia o e-mail.
+  // Se ficar vazio, o formulário NÃO envia nada e avisa isso ao visitante.
+  // Só o Worker conhece a chave do Resend: nunca coloque segredos neste arquivo.
+  formEndpoint: "https://betel-site-ilc.661207.workers.dev"
 };

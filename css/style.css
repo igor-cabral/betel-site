@@ -424,3 +424,12 @@ main{overflow-x:clip}
 .car-head h3{font-size:1.4rem}
 
 .dark .sec-head p,.deep .sec-head p{color:#b9c4de}
+
+/* Formulário: honeypot, estados do botão e contador */
+.hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.btn[disabled]{opacity:.65;cursor:progress;transform:none}
+.btn[disabled]::after{content:""}
+form[aria-busy="true"] .btn[disabled]::after{content:"…"}
+.help.warn{color:#b3261e}
+.status:focus{outline:none}
+.pending-banner[hidden]{display:none}

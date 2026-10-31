@@ -149,46 +149,131 @@
   /* ---------- Formulário ---------- */
   var form = $("#lead-form");
   if (!form) return;
-  var status = $("#form-status"), select = form.elements["interesse"];
+  var status = $("#form-status"), select = form.elements["interesse"], btn = $("button[type=submit]", form);
+  var tel = form.elements["telefone"], msgField = form.elements["mensagem"], counter = $("#count-mensagem");
+  var pending = $("#form-pending");
+  if (pending) pending.hidden = !!cfg.formEndpoint; // aviso "em configuração" só aparece se NÃO houver endpoint
+
   var param = new URLSearchParams(window.location.search).get("empreendimento");
   if (param && select) $$("option", select).forEach(function (o) { if (o.value === param) select.value = param; });
 
-  function setStatus(kind, html) { status.className = "status show " + kind; status.innerHTML = html; status.setAttribute("role", kind === "bad" ? "alert" : "status"); }
+  var BTN_LABEL = "Enviar contato";
+  var loadedAt = performance.now();
+  var sending = false, lockedUntil = 0;
+  function newId() {
+    return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(16).slice(2) + "-betel";
+  }
+  var submissionId = newId(); // identifica a tentativa: reenviar os MESMOS dados não duplica o e-mail
+
+  function setStatus(kind, html, focus) {
+    status.className = "status show " + kind; status.innerHTML = html;
+    status.setAttribute("role", kind === "bad" ? "alert" : "status");
+    if (focus) status.focus();
+  }
   function fieldErr(name, msg) {
     var el = form.elements[name], out = document.getElementById("err-" + name);
     if (el && el.setAttribute) el.setAttribute("aria-invalid", msg ? "true" : "false");
     if (out) out.textContent = msg || "";
   }
+  function renderBtn() {
+    var locked = Date.now() < lockedUntil;
+    btn.disabled = sending || locked;
+    btn.textContent = sending ? "Enviando" : (locked ? "Enviado" : BTN_LABEL);
+    form.setAttribute("aria-busy", sending ? "true" : "false");
+  }
+
+  /* Máscara de telefone brasileiro: (47) 99999-9999 ou (47) 3333-9999 */
+  function maskPhone(v) {
+    var d = v.replace(/\D/g, "").slice(0, 11);
+    if (d.length > 10) return "(" + d.slice(0, 2) + ") " + d.slice(2, 7) + "-" + d.slice(7);
+    if (d.length > 6) return "(" + d.slice(0, 2) + ") " + d.slice(2, 6) + "-" + d.slice(6);
+    if (d.length > 2) return "(" + d.slice(0, 2) + ") " + d.slice(2);
+    return d ? "(" + d : "";
+  }
+  tel.addEventListener("input", function () { tel.value = maskPhone(tel.value); });
+  function updateCount() {
+    if (!counter) return;
+    var n = msgField.value.length; counter.textContent = n + "/1000"; counter.classList.toggle("warn", n >= 950);
+  }
+  msgField.addEventListener("input", updateCount);
+  // qualquer edição gera uma nova tentativa (evita reutilizar a mesma chave com dados diferentes)
+  form.addEventListener("input", function () { submissionId = newId(); });
+
+  /* As mesmas regras são revalidadas no Worker; aqui servem para dar retorno imediato. */
   function validate() {
     var ok = true;
-    var nome = form.elements["nome"].value.trim();
-    var tel = form.elements["telefone"].value.replace(/\D/g, "");
+    var nome = form.elements["nome"].value.trim().replace(/\s+/g, " ");
+    var d = tel.value.replace(/\D/g, "");
     var email = form.elements["email"].value.trim();
-    if (nome.length < 3) { fieldErr("nome", "Informe seu nome."); ok = false; } else fieldErr("nome", "");
-    if (tel.length < 10 || tel.length > 11) { fieldErr("telefone", "Informe um telefone com DDD."); ok = false; } else fieldErr("telefone", "");
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { fieldErr("email", "E-mail inválido."); ok = false; } else fieldErr("email", "");
+    var telOk = (d.length === 10 || d.length === 11) && /^[1-9][1-9]/.test(d) && (d.length === 10 || d.charAt(2) === "9");
+    if (nome.length < 3 || !/[A-Za-zÀ-ÿ]/.test(nome)) { fieldErr("nome", "Informe seu nome."); ok = false; } else fieldErr("nome", "");
+    if (!telOk) { fieldErr("telefone", "Informe um telefone válido com DDD."); ok = false; } else fieldErr("telefone", "");
+    if (email && !/^[^\s@,;<>()"]+@[^\s@,;<>()"]+\.[^\s@,;<>()"]{2,}$/.test(email)) { fieldErr("email", "E-mail inválido."); ok = false; } else fieldErr("email", "");
     if (!select.value) { fieldErr("interesse", "Escolha uma opção."); ok = false; } else fieldErr("interesse", "");
+    if (msgField.value.length > 1000) { fieldErr("mensagem", "A mensagem pode ter no máximo 1000 caracteres."); ok = false; } else fieldErr("mensagem", "");
     if (!form.elements["consentimento"].checked) { fieldErr("consentimento", "É necessário concordar para continuar."); ok = false; } else fieldErr("consentimento", "");
     return ok;
   }
+
+  // Link de WhatsApp para quando o envio falha. Não leva nome, telefone nem e-mail (dados pessoais ficam fora da URL).
+  function waFallback(interesse) {
+    var m = "Olá! Tentei enviar o formulário do site da Betel e não consegui. Meu interesse: " + interesse + ".";
+    return '<br><a class="btn btn-gold btn-sm" target="_blank" rel="noopener" href="' + waUrl(m) + '">Falar no WhatsApp</a>';
+  }
+  function showFailure(kind, interesse) {
+    if (kind === "rate") setStatus("bad", "<strong>Muitas tentativas em pouco tempo.</strong> Aguarde alguns minutos e tente de novo, ou fale com a equipe agora." + waFallback(interesse), true);
+    else if (kind === "fast") setStatus("warn", "Quase lá! Aguarde alguns segundos e clique em enviar novamente. Seus dados continuam preenchidos.", true);
+    else if (kind === "network") setStatus("bad", "<strong>Não conseguimos falar com o servidor.</strong> Verifique sua conexão e tente de novo. Seus dados continuam preenchidos." + waFallback(interesse), true);
+    else setStatus("bad", "<strong>Não foi possível enviar agora.</strong> Seu contato não foi enviado, mas seus dados continuam preenchidos. Tente novamente ou fale com a equipe pelo WhatsApp." + waFallback(interesse), true);
+  }
+
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+    if (sending || Date.now() < lockedUntil) return; // bloqueia clique duplo / Enter repetido
     if (!validate()) { setStatus("bad", "Revise os campos destacados."); var bad = $("[aria-invalid=true]", form); if (bad) bad.focus(); return; }
+    var label = select.options[select.selectedIndex].text;
     var data = {
-      nome: form.elements["nome"].value.trim(), telefone: form.elements["telefone"].value.trim(),
-      email: form.elements["email"].value.trim(), interesse: select.options[select.selectedIndex].text,
-      mensagem: form.elements["mensagem"].value.trim(), origem: window.location.pathname.split("/").pop() || "index.html"
+      nome: form.elements["nome"].value.trim().replace(/\s+/g, " "), telefone: tel.value.trim(),
+      email: form.elements["email"].value.trim(), interesse: label, interesse_id: select.value,
+      mensagem: msgField.value.trim(), origem: window.location.pathname.split("/").pop() || "index.html",
+      website: form.elements["website"] ? form.elements["website"].value : "",
+      elapsed_ms: Math.round(performance.now() - loadedAt), submission_id: submissionId
     };
+
+    // Sem endpoint configurado: NÃO finge envio. Orienta o visitante a usar o WhatsApp.
     if (!cfg.formEndpoint) {
       var msg = "Olá! Meu nome é " + data.nome + ". Meu interesse: " + data.interesse + "." + (data.mensagem ? " " + data.mensagem : "") + " Telefone para retorno: " + data.telefone + ".";
       setStatus("warn", "<strong>Seus dados ainda não foram enviados.</strong> O envio do formulário está em fase de configuração. Para falar agora com a equipe, continue pelo WhatsApp:<br>" +
         '<a class="btn btn-gold btn-sm" target="_blank" rel="noopener" href="' + waUrl(msg) + '">Continuar no WhatsApp</a>');
       return;
     }
-    var btn = $("button[type=submit]", form); btn.disabled = true; btn.textContent = "Enviando…";
-    fetch(cfg.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
-      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); form.reset(); setStatus("ok", "Recebemos seus dados. Em breve a equipe da Betel entrará em contato."); })
-      .catch(function () { setStatus("bad", "Não foi possível enviar agora. Tente novamente ou fale conosco pelo WhatsApp."); })
-      .then(function () { btn.disabled = false; btn.textContent = "Enviar contato"; });
+
+    sending = true; renderBtn();
+    status.className = "status"; status.textContent = "";
+    var ctrl = "AbortController" in window ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 15000);
+    fetch(cfg.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data), signal: ctrl ? ctrl.signal : undefined })
+      .then(function (r) {
+        return r.json().catch(function () { return null; }).then(function (j) { return { status: r.status, ok: r.ok, json: j }; });
+      })
+      .then(function (res) {
+        // Sucesso SOMENTE se o Worker confirmar que o e-mail foi aceito pelo serviço de envio ({ok:true}).
+        if (res.ok && res.json && res.json.ok === true) {
+          form.reset(); updateCount();
+          $$("[aria-invalid]", form).forEach(function (el) { el.setAttribute("aria-invalid", "false"); });
+          submissionId = newId(); loadedAt = performance.now();
+          lockedUntil = Date.now() + 8000; setTimeout(renderBtn, 8100);
+          setStatus("ok", "<strong>Recebemos seu contato.</strong> A equipe da Betel retornará pelo telefone ou e-mail informado.", true);
+        } else if (res.status === 400 && res.json && res.json.code === "validation") {
+          Object.keys(res.json.errors || {}).forEach(function (k) { fieldErr(k, res.json.errors[k]); });
+          setStatus("bad", "Revise os campos destacados.", true);
+          var first = $("[aria-invalid=true]", form); if (first) first.focus();
+        } else if (res.status === 400 && res.json && res.json.code === "too_fast") showFailure("fast", label);
+        else if (res.status === 429) showFailure("rate", label);
+        else showFailure("server", label);
+      })
+      .catch(function () { showFailure("network", label); })
+      .then(function () { clearTimeout(timer); sending = false; renderBtn(); });
   });
+  updateCount(); renderBtn();
 })();

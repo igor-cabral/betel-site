@@ -46,7 +46,8 @@ Material recebido (renders, plantas, elevações, moodboard e quadro de áreas d
 - [ ] Fotos e descrição de "Salão de Festas de Empresa" e "Recanto da Gruta Residence" (hoje, espaços reservados sem dados inventados).
 
 ## Técnico (próxima etapa)
-- [ ] **Formulário:** definir o destino dos leads (e-mail/CRM/planilha privada) e preencher `formEndpoint`; incluir proteção anti-spam. Não testado com envio real.
+- [ ] **Formulário (produção):** o Worker de referência e os testes estão em `worker/`, mas **nenhum e-mail real foi enviado em teste**. Faltam: e-mail definitivo da Betel (`BETEL_DESTINATION_EMAIL`), domínio verificado no Resend e novo `RESEND_FROM`, publicação do Worker novo junto com o site, e um teste de envio real (ver `worker/README.md`).
+- [ ] Anti-spam adicional (regra de rate limiting no Cloudflare e, se necessário, Turnstile).
 - [ ] Mapas incorporados: hoje há botão "Explorar no Google Maps" gerado pelo endereço; confirmar que abre no local correto.
 - [ ] SEO: `sitemap.xml`, `robots.txt`, URLs canônicas, dados estruturados e imagem Open Graph dedicada (dependem do domínio final).
 - [ ] Domínio, hospedagem e publicação (aguardando autorização).

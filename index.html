@@ -226,12 +226,12 @@
         <p class="muted rv" style="margin-top:1.4rem">Joinville · Santa Catarina</p>
       </div>
       <form class="form rv" id="lead-form" novalidate>
-        <p class="pending-banner"><strong>Em configuração:</strong> o envio deste formulário ainda não está conectado. Enquanto isso, use o WhatsApp para falar com a equipe.</p>
+        <p class="pending-banner" id="form-pending" hidden><strong>Em configuração:</strong> o envio deste formulário ainda não está conectado. Enquanto isso, use o WhatsApp para falar com a equipe.</p>
         <div class="row">
-          <div class="field"><label for="nome">Nome *</label><input id="nome" name="nome" autocomplete="name" required><div class="err" id="err-nome"></div></div>
-          <div class="field"><label for="telefone">Telefone / WhatsApp *</label><input id="telefone" name="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(47) 90000-0000" required><div class="err" id="err-telefone"></div></div>
+          <div class="field"><label for="nome">Nome *</label><input id="nome" name="nome" autocomplete="name" maxlength="100" required aria-describedby="err-nome"><div class="err" id="err-nome"></div></div>
+          <div class="field"><label for="telefone">Telefone / WhatsApp *</label><input id="telefone" name="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(47) 90000-0000" maxlength="16" required aria-describedby="err-telefone"><div class="err" id="err-telefone"></div></div>
         </div>
-        <div class="field"><label for="email">E-mail (opcional)</label><input id="email" name="email" type="email" autocomplete="email"><div class="err" id="err-email"></div></div>
+        <div class="field"><label for="email">E-mail (opcional)</label><input id="email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" aria-describedby="err-email"><div class="err" id="err-email"></div></div>
         <div class="field"><label for="interesse">Sobre o que você quer conversar? *</label>
           <select id="interesse" name="interesse" required>
             <option value="">Selecione…</option>
@@ -241,13 +241,14 @@
             <option value="permuta">Tenho um terreno (permuta)</option>
             <option value="outro">Outro assunto / ainda não sei</option>
           </select><div class="err" id="err-interesse"></div></div>
-        <div class="field"><label for="mensagem">Quer deixar uma mensagem? (opcional)</label><textarea id="mensagem" name="mensagem" rows="3"></textarea></div>
+        <div class="field"><label for="mensagem">Quer deixar uma mensagem? (opcional)</label><textarea id="mensagem" name="mensagem" rows="3" maxlength="1000" aria-describedby="count-mensagem err-mensagem"></textarea><p class="help" id="count-mensagem">0/1000</p><div class="err" id="err-mensagem"></div></div>
         <div>
           <label class="check"><input type="checkbox" name="consentimento" id="consentimento"> <span>Concordo em ser contatado(a) pela Betel sobre este assunto e que meus dados sejam usados apenas para esse fim. *</span></label>
           <div class="field"><div class="err" id="err-consentimento"></div></div>
         </div>
+        <div class="hp" aria-hidden="true"><label for="website">Não preencha este campo</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
         <button class="btn btn-gold" type="submit">Enviar contato</button>
-        <div id="form-status" class="status" aria-live="polite"></div>
+        <div id="form-status" class="status" aria-live="polite" tabindex="-1"></div>
       </form>
     </div>
   </div>
