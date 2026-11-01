@@ -91,7 +91,7 @@
       $$("main h2:not(.no-split)").forEach(function (h) { splitWords(h); h.classList.add("sw"); io.observe(h); });
       mark(".dim", "dim-obs");
       $$("[data-stagger]").forEach(function (g) { $$(":scope > *", g).forEach(function (c, k) { c.style.setProperty("--i", k); }); g.classList.add("stagger"); io.observe(g); });
-      $$(".imr, .draw, .rv").forEach(function (el) { io.observe(el); });
+      $$(".imr, .draw, .rv, .colmeia-bg").forEach(function (el) { io.observe(el); });
       $$(".draw").forEach(function (g) { $$("path,line,rect", g).forEach(function (p, k) { p.setAttribute("pathLength", "1"); p.style.setProperty("--i", k); }); });
       document.documentElement.classList.add("anim");
     }

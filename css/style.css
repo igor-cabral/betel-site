@@ -435,3 +435,25 @@ form[aria-busy="true"] .btn[disabled]::after{content:"…"}
 .pending-banner[hidden]{display:none}
 
 .status .diag{display:block;margin-top:.7rem;font-size:.75rem;opacity:.75}
+
+/* ===== Página inicial: marca d'água da Betel no bloco azul que revela as imagens, e colmeia de fundo =====
+   Tudo escopado em .home / .colmeia-bg: as páginas dos empreendimentos não mudam. */
+.home .imr::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:url(../img/betel-marca-branca.png) center/64% auto no-repeat;opacity:.4}
+.home .imr>img{position:relative;z-index:1}
+@media (prefers-reduced-motion:no-preference){
+  /* o azul com a marca aparece primeiro; a imagem desce por cima dele logo em seguida (só o recorte tem atraso; o zoom do hover não) */
+  .anim .home .imr img{transition:clip-path 1.3s var(--ease) .4s,transform 1.6s var(--ease)}
+}
+.colmeia-bg{overflow:hidden}
+.colmeia-bg>.wrap{position:relative;z-index:1}
+.colmeia-bg::after{content:"";position:absolute;z-index:0;pointer-events:none;width:clamp(320px,46vw,660px);aspect-ratio:900/794;background:var(--colmeia) center/contain no-repeat;opacity:var(--colmeia-o,.12)}
+.colmeia-bl::after{left:-9%;bottom:-16%}
+.colmeia-tr::after{right:-9%;top:-16%}
+.dark.colmeia-bg{--colmeia:url(../img/colmeia-branca.png);--colmeia-o:.09}
+.deep.colmeia-bg{--colmeia:url(../img/colmeia-dourada.png);--colmeia-o:.14}
+.gold-bg.colmeia-bg{--colmeia:url(../img/colmeia-azul.png);--colmeia-o:.14}
+.white.colmeia-bg{--colmeia:url(../img/colmeia-azul.png);--colmeia-o:.06}
+@media (prefers-reduced-motion:no-preference){
+  .anim .colmeia-bg::after{opacity:0;transform:scale(.9) rotate(-5deg);transition:opacity 1.8s var(--ease),transform 2.4s var(--ease)}
+  .anim .colmeia-bg.in::after{opacity:var(--colmeia-o,.12);transform:none}
+}
