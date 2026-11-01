@@ -17,6 +17,7 @@ vivendas-do-sul.html          Página do Residencial Vivendas do Sul
 css/style.css                 Estilos (cores e medidas no topo, em :root)
 js/config.js                  CONFIGURAÇÃO: WhatsApp e endereço do formulário
 js/main.js                    Animações, menu, galeria, ampliação de imagens e formulário
+js/form-response.js           Interpretação da resposta do Worker (testada em worker/test)
 img/  fonts/                  Imagens otimizadas (nomes semânticos) e fontes locais
 PENDENCIAS_CLIENTE.md         O que falta confirmar com a Betel
 ```

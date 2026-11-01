@@ -12,6 +12,26 @@ site (navegador) ──POST JSON──▶ Cloudflare Worker ──API──▶ R
 - `test/worker.test.mjs` — testes automatizados (`node --test worker/test/worker.test.mjs`). O Resend é simulado.
 - `test/dev-server.mjs` — site + Worker + Resend **simulado** na sua máquina (`node worker/test/dev-server.mjs`, abra http://localhost:8080). Os e-mails "enviados" aparecem em http://localhost:8787/__emails e as falhas se simulam com `/__mode?m=fail422|fail500|network|slow`.
 
+## Contrato com o site (resposta do Worker)
+O site (`js/form-response.js`) decide assim:
+| Resposta do Worker | O site mostra |
+|---|---|
+| `200` + `{ok:true,id}` (formato deste Worker) | sucesso |
+| qualquer 2xx que confirme (`{success:true}`, `{sent:true}`, `{id}` do Resend...) ou 2xx sem corpo/texto | sucesso (o 2xx significa que o Worker já tinha o aceite do Resend) |
+| 2xx com `{ok:false}`, `{error}` ou página HTML | erro |
+| `400 validation` / `400 too_fast` / `429` | erros do formulário / "aguarde" / "muitas tentativas" |
+| qualquer outro 4xx/5xx | "Não foi possível enviar agora" + código de suporte (`HTTP 502 · email_failed`...) |
+| sem resposta legível (timeout, CORS ausente, rede) | "Não conseguimos confirmar o envio" (o contato pode ter sido recebido; não incentiva reenvio imediato) |
+
+**Regra de ouro do Worker:** só devolver 2xx depois que o Resend aceitou o e-mail; qualquer falha do Resend deve ser 4xx/5xx. O site não vê o Resend (a chave fica só no Worker), então depende dessa regra.
+
+## Diagnóstico: "o e-mail chegou, mas o site mostra erro"
+Abra o site, F12 → aba **Network**, envie o formulário e clique na requisição para `workers.dev`:
+1. **Há `access-control-allow-origin` nos *Response Headers* do POST?** Se não, o navegador esconde a resposta (o Worker processou e o e-mail saiu, mas o site não consegue ler). Corrija no Worker: toda resposta, inclusive a do POST, precisa do cabeçalho com a origem do site.
+2. **Qual o *Status* e o *Response* (corpo)?** Anote. Com este frontend, 2xx confirmando = sucesso; 4xx/5xx = erro.
+3. O texto de erro agora traz um **código de suporte** (ex.: `HTTP 502 · email_failed`) e o Console mostra `[betel-form] ...` (sem dados pessoais).
+4. Confirme qual código está publicado: este Worker responde `405 {"ok":false,"code":"method"}` a um GET; o antigo provavelmente responde outra coisa.
+
 ## Variáveis do Worker (painel Cloudflare → Workers → *seu worker* → Settings → Variables)
 | Nome | Tipo | Valor |
 |---|---|---|

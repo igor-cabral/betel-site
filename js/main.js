@@ -157,6 +157,11 @@
   var param = new URLSearchParams(window.location.search).get("empreendimento");
   if (param && select) $$("option", select).forEach(function (o) { if (o.value === param) select.value = param; });
 
+  // Interpretação da resposta do Worker (js/form-response.js). O reserva abaixo só vale se o arquivo não carregar.
+  var FR = window.BetelFormResponse || {
+    readBody: function (r) { return r.json().then(function (j) { return { status: r.status, ok: r.ok, type: "", text: "", json: j }; }, function () { return { status: r.status, ok: r.ok, type: "", text: "", json: null }; }); },
+    classify: function (res) { return res.ok && res.json && res.json.ok === true ? { kind: "success" } : { kind: "server", ref: "HTTP " + res.status }; }
+  };
   var BTN_LABEL = "Enviar contato";
   var loadedAt = performance.now();
   var sending = false, lockedUntil = 0;
@@ -220,11 +225,27 @@
     var m = "Olá! Tentei enviar o formulário do site da Betel e não consegui. Meu interesse: " + interesse + ".";
     return '<br><a class="btn btn-gold btn-sm" target="_blank" rel="noopener" href="' + waUrl(m) + '">Falar no WhatsApp</a>';
   }
-  function showFailure(kind, interesse) {
-    if (kind === "rate") setStatus("bad", "<strong>Muitas tentativas em pouco tempo.</strong> Aguarde alguns minutos e tente de novo, ou fale com a equipe agora." + waFallback(interesse), true);
+  function diag(ref) {
+    return ref ? '<small class="diag">Código de suporte: ' + String(ref).replace(/[^\w ·.:\-]/g, "") + "</small>" : "";
+  }
+  function showFailure(kind, interesse, ref) {
+    var wa = waFallback(interesse), d = diag(ref);
+    if (kind === "rate") setStatus("bad", "<strong>Muitas tentativas em pouco tempo.</strong> Aguarde alguns minutos e tente de novo, ou fale com a equipe agora." + wa + d, true);
     else if (kind === "fast") setStatus("warn", "Quase lá! Aguarde alguns segundos e clique em enviar novamente. Seus dados continuam preenchidos.", true);
-    else if (kind === "network") setStatus("bad", "<strong>Não conseguimos falar com o servidor.</strong> Verifique sua conexão e tente de novo. Seus dados continuam preenchidos." + waFallback(interesse), true);
-    else setStatus("bad", "<strong>Não foi possível enviar agora.</strong> Seu contato não foi enviado, mas seus dados continuam preenchidos. Tente novamente ou fale com a equipe pelo WhatsApp." + waFallback(interesse), true);
+    else if (kind === "offline") setStatus("bad", "<strong>Sem conexão com a internet.</strong> Seus dados continuam preenchidos; envie novamente quando a conexão voltar." + wa, true);
+    // Sem resposta legível (timeout, bloqueio de rede/CORS): o servidor PODE ter recebido o contato. Não incentivamos reenvio imediato.
+    else if (kind === "unconfirmed") setStatus("warn", "<strong>Não conseguimos confirmar o envio.</strong> Seus dados continuam preenchidos. Para evitar contatos duplicados, aguarde alguns minutos antes de tentar de novo ou fale com a equipe pelo WhatsApp." + wa + d, true);
+    else setStatus("bad", "<strong>Não foi possível enviar agora.</strong> Seu contato não foi enviado, mas seus dados continuam preenchidos. Tente novamente ou fale com a equipe pelo WhatsApp." + wa + d, true);
+  }
+  function showSuccess() {
+    // O sucesso é marcado ANTES de mexer na interface: um erro de tela nunca pode virar "falha de envio".
+    lockedUntil = Date.now() + 8000; setTimeout(renderBtn, 8100);
+    submissionId = newId(); loadedAt = performance.now();
+    try {
+      form.reset(); updateCount();
+      $$("[aria-invalid]", form).forEach(function (el) { el.setAttribute("aria-invalid", "false"); });
+    } catch (e) { /* limpeza opcional */ }
+    setStatus("ok", "<strong>Recebemos seu contato.</strong> A equipe da Betel retornará pelo telefone ou e-mail informado.", true);
   }
 
   form.addEventListener("submit", function (e) {
@@ -252,28 +273,36 @@
     status.className = "status"; status.textContent = "";
     var ctrl = "AbortController" in window ? new AbortController() : null;
     var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 15000);
+    function finish() { clearTimeout(timer); sending = false; renderBtn(); }
+    function onResponse(res) {
+      var out = FR.classify(res);
+      if (out.ref) console.warn("[betel-form]", out.kind + (out.legacy ? " (legado)" : ""), out.ref); // sem dados pessoais
+      if (out.kind === "success") return showSuccess();
+      if (out.kind === "validation") {
+        Object.keys((res.json && res.json.errors) || {}).forEach(function (k) { fieldErr(k, res.json.errors[k]); });
+        setStatus("bad", "Revise os campos destacados.", true);
+        var first = $("[aria-invalid=true]", form); if (first) first.focus();
+        return;
+      }
+      showFailure(out.kind, label, out.ref);
+    }
+    function onNetworkError(err) {
+      var timedOut = err && err.name === "AbortError";
+      console.warn("[betel-form] sem resposta legível", timedOut ? "tempo esgotado" : (err && err.name) || "erro de rede");
+      if (navigator.onLine === false) showFailure("offline", label);
+      else showFailure("unconfirmed", label, timedOut ? "tempo esgotado" : "sem resposta legível");
+    }
+    // then(sucesso, falha) em vez de then().catch(): erros ocorridos DEPOIS de receber a resposta nunca viram "falha de envio".
+    // Não há nenhuma nova tentativa automática: cada clique gera no máximo UMA requisição.
     fetch(cfg.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data), signal: ctrl ? ctrl.signal : undefined })
-      .then(function (r) {
-        return r.json().catch(function () { return null; }).then(function (j) { return { status: r.status, ok: r.ok, json: j }; });
-      })
-      .then(function (res) {
-        // Sucesso SOMENTE se o Worker confirmar que o e-mail foi aceito pelo serviço de envio ({ok:true}).
-        if (res.ok && res.json && res.json.ok === true) {
-          form.reset(); updateCount();
-          $$("[aria-invalid]", form).forEach(function (el) { el.setAttribute("aria-invalid", "false"); });
-          submissionId = newId(); loadedAt = performance.now();
-          lockedUntil = Date.now() + 8000; setTimeout(renderBtn, 8100);
-          setStatus("ok", "<strong>Recebemos seu contato.</strong> A equipe da Betel retornará pelo telefone ou e-mail informado.", true);
-        } else if (res.status === 400 && res.json && res.json.code === "validation") {
-          Object.keys(res.json.errors || {}).forEach(function (k) { fieldErr(k, res.json.errors[k]); });
-          setStatus("bad", "Revise os campos destacados.", true);
-          var first = $("[aria-invalid=true]", form); if (first) first.focus();
-        } else if (res.status === 400 && res.json && res.json.code === "too_fast") showFailure("fast", label);
-        else if (res.status === 429) showFailure("rate", label);
-        else showFailure("server", label);
-      })
-      .catch(function () { showFailure("network", label); })
-      .then(function () { clearTimeout(timer); sending = false; renderBtn(); });
+      .then(FR.readBody)
+      .then(
+        function (res) {
+          try { onResponse(res); } catch (e) { console.error("[betel-form] erro de interface após a resposta", e && e.message); }
+          finish();
+        },
+        function (err) { onNetworkError(err); finish(); }
+      );
   });
   updateCount(); renderBtn();
 })();

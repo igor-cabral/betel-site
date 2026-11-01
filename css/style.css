@@ -433,3 +433,5 @@ form[aria-busy="true"] .btn[disabled]::after{content:"…"}
 .help.warn{color:#b3261e}
 .status:focus{outline:none}
 .pending-banner[hidden]{display:none}
+
+.status .diag{display:block;margin-top:.7rem;font-size:.75rem;opacity:.75}

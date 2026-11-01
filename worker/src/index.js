@@ -299,9 +299,12 @@ export default {
       return await handle(request, env);
     } catch {
       log("unhandled_error");
-      return new Response(JSON.stringify({ ok: false, code: "internal" }), {
-        status: 500, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
-      });
+      // mesmo no erro inesperado, a resposta leva o cabeçalho CORS da origem oficial: sem ele o navegador
+      // esconderia o status e o site não conseguiria interpretar a resposta.
+      const headers = { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" };
+      const allowed = trimSlash(env && env.ALLOWED_ORIGIN);
+      if (allowed && request.headers.get("Origin") === allowed) { headers["Access-Control-Allow-Origin"] = allowed; headers["Vary"] = "Origin"; }
+      return new Response(JSON.stringify({ ok: false, code: "internal" }), { status: 500, headers });
     }
   },
 };

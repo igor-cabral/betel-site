@@ -197,3 +197,22 @@ test("validate(): aceita rótulo antigo (sem interesse_id) e normaliza telefone"
   assert.equal(r.value.interesseId, "vivendas-do-sul");
   assert.equal(r.value.telefone, "(47) 3333-1234");
 });
+
+test("contrato de sucesso: 200 + JSON {ok:true,id} + Content-Type JSON + CORS (é o que o site interpreta)", async () => {
+  const res = await handle(req(valid()), env, { fetch: resendOk() });
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("Content-Type"), /application\/json/);
+  assert.equal(res.headers.get("Access-Control-Allow-Origin"), ORIGIN);
+  const j = await res.json();
+  assert.equal(j.ok, true);
+  assert.equal(typeof j.id, "string");
+});
+
+test("erro inesperado (500 interno) também leva o cabeçalho CORS da origem oficial", async () => {
+  const { default: worker } = await import("../src/index.js");
+  const boom = { ...env, RATE_LIMITER: { limit: async () => { throw new Error("falha simulada"); } } };
+  const res = await worker.fetch(req(valid()), boom);
+  assert.equal(res.status, 500);
+  assert.equal(res.headers.get("Access-Control-Allow-Origin"), ORIGIN);
+  assert.equal((await res.json()).ok, false);
+});
