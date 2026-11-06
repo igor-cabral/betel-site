@@ -31,11 +31,15 @@ PENDENCIAS_CLIENTE.md         O que falta confirmar com a Betel
 
 - **Palazzo Di Fatima (v2.1):** página refeita com o material oficial: renders em alta resolução, galeria "por fora" e "por dentro", planta humanizada, planta térrea com giardino, croqui e elevações, paleta de materiais (moodboard) e quadro de unidades (20 apartamentos, áreas por final) tirado do projeto arquitetônico. Os PDFs técnicos não foram publicados.
 
+- **Marca Betel reforçada (v2.3):** hexágono da colmeia nos rótulos de seção, colmeia nos heróis, marca d'água nas revelações de imagem de todas as páginas, colmeia de fundo em seções escuras, assinatura "Construindo mais e melhor!" e marca em traço no rodapé, favicon com a colmeia (`img/favicon.png`, `img/apple-touch-icon.png`) e cor de seleção de texto em dourado.
+
 ## Animações
 - Revelação ao rolar (texto, títulos palavra a palavra, imagens em "cortina", linhas de cota que se desenham, desenho de planta que se traça), barra de progresso no cabeçalho, destaque da seção atual no menu, parallax leve (máx. 48 px) no hero, zoom suave nas fotos.
 - Usam só `transform`/`opacity`/`clip-path` e `IntersectionObserver` (sem biblioteca).
 - **Acessibilidade:** respeitam "reduzir movimento" do sistema (tudo aparece sem animar) e, se o JavaScript falhar, todo o conteúdo continua visível.
-- Transições entre páginas (`@view-transition`) funcionam em navegadores que suportam, quando o site está publicado; em navegadores sem suporte, não fazem nada.
+- **Transição entre páginas:** ao abrir outra página do site, um "curtain" azul com a marca da Betel, a colmeia e uma linha dourada sobe e desce (cerca de 0,4 s na saída e 0,8 s na entrada). Funciona em todos os navegadores, usa uma chave temporária no `sessionStorage` e desliga com "reduzir movimento". Links para a mesma página (âncoras), links externos e links com nova aba não usam o curtain. Para removê-lo, apague o `<div class="curtain">` das páginas.
+- **Hero que reage aos projetos (index):** passar o mouse ou focar em um dos três projetos da faixa inferior troca a foto do hero com fade e destaca o item; ao sair, volta ao Palazzo. No celular, o primeiro toque mostra o projeto e o segundo abre a página. As fotos extras só carregam depois do `load` (e não carregam com "economia de dados").
+- **Fachada que se desenha com a rolagem (index, "Sobre"):** o traço avança conforme a rolagem (e desfaz ao voltar); no fim as janelas acendem andar por andar e a colmeia da marca se preenche.
 - Para desligar uma animação específica, remova a classe `rv`, `imr`, `draw` ou `data-stagger` do elemento no HTML.
 
 ## Como atualizar

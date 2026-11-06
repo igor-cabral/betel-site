@@ -11,10 +11,13 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:image" content="img/palazzo-hero.jpg">
 <meta name="theme-color" content="#0b1f4b">
-<link rel="icon" href="img/betel-logo.png">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<script>try{var t=+sessionStorage.getItem("betel-nav");if(t&&Date.now()-t<4000)document.documentElement.classList.add("nav-in");sessionStorage.removeItem("betel-nav")}catch(e){}</script>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="home">
+<div class="curtain" aria-hidden="true"><img src="img/betel-marca-branca.png" alt="" width="1400" height="305"><i></i></div>
 <a class="skip" href="#conteudo">Ir para o conteúdo</a>
 <header class="site-header">
   <div class="wrap">
@@ -32,9 +35,12 @@
 </header>
 <main id="conteudo">
 <section class="hero" aria-labelledby="h1">
-  <div class="hero-media"><img src="img/palazzo-hero.jpg" alt="Fachada ilustrativa do Palazzo Di Fatima Residence, com paisagismo na base e na varanda" width="1581" height="1125" fetchpriority="high" decoding="async"></div>
+  <div class="hero-media"><img src="img/palazzo-hero.jpg" alt="Fachada ilustrativa do Palazzo Di Fatima Residence, com paisagismo na base e na varanda" width="1581" height="1125" fetchpriority="high" decoding="async" class="layer on">
+    <img class="layer" data-src="img/portal-fachada.jpg" alt="" width="1600" height="900" decoding="async">
+    <img class="layer lowres" data-src="img/vivendas-fachada.jpg" alt="" width="580" height="435" decoding="async"></div>
+  <img class="hero-hex" src="img/colmeia-dourada.png" alt="" aria-hidden="true" width="900" height="794" decoding="async" fetchpriority="low">
   <div class="wrap hero-copy">
-    <p class="dim"><span class="n">Joinville · SC</span><span class="ln"></span><span>Pré-lançamentos</span></p>
+    <p class="dim"><span class="n">Betel · Joinville/SC</span><span class="ln"></span><span class="dim-r">Construindo mais e melhor<span class="hide-sm"> · Pré-lançamentos</span></span></p>
     <h1 id="h1"><span class="ln-m"><span style="--i:0">Seu apartamento</span></span><span class="ln-m"><span style="--i:1">em Joinville, com</span></span><span class="ln-m"><span style="--i:2">o dia a dia <em>por perto.</em></span></span></h1>
     <p class="lead">A Betel incorpora apartamentos compactos de 1 e 2 dormitórios em três bairros da cidade. Para quem quer sair do aluguel, morar no que é seu ou investir.</p>
     <div class="actions">
@@ -44,7 +50,7 @@
   </div>
   <div class="wrap">
     <nav class="hero-strip" aria-label="Empreendimentos">
-      <a class="hs" href="palazzo-di-fatima.html"><span class="num">01</span><strong>Palazzo Di Fatima Residence</strong><small>Saguaçu · 1 e 2 dormitórios</small></a>
+      <a class="hs on" href="palazzo-di-fatima.html"><span class="num">01</span><strong>Palazzo Di Fatima Residence</strong><small>Saguaçu · 1 e 2 dormitórios</small></a>
       <a class="hs" href="portal-de-paranagua.html"><span class="num">02</span><strong>Residencial Portal de Paranaguá</strong><small>Nova Brasília · 1 dormitório</small></a>
       <a class="hs" href="vivendas-do-sul.html"><span class="num">03</span><strong>Residencial Vivendas do Sul</strong><small>Ulysses Guimarães · 1 dormitório</small></a>
     </nav>
@@ -143,11 +149,12 @@
         <p class="rv">O compromisso é trazer inovação, qualidade construtiva e valorização imobiliária. Por trás, empresários com experiência em gestão administrativa, comercial e construtiva, unidos para construir mais e melhor.</p>
         <a class="tlink rv" href="#empreendimentos">Voltar aos projetos</a>
       </div>
-      <div><svg class="bp-art draw" viewBox="0 0 400 460" aria-hidden="true" focusable="false">
+      <div><svg class="bp-art scrub" viewBox="0 0 400 460" aria-hidden="true" focusable="false">
   <path d="M10 420H390"/><path d="M70 420V90"/><path d="M330 420V90"/><path d="M60 90H340"/><path d="M70 180H330"/><path d="M70 270H330"/><path d="M70 360H330"/>
-  <path d="M105 110h50v50h-50z"/><path d="M245 110h50v50h-50z"/><path d="M105 200h50v50h-50z"/><path d="M245 200h50v50h-50z"/>
-  <path d="M105 290h50v50h-50z"/><path d="M245 290h50v50h-50z"/><path d="M185 420V370h30v50"/><path d="M105 380h50v40"/><path d="M245 380h50v40"/>
+  <path class="win" d="M105 110h50v50h-50z"/><path class="win" d="M245 110h50v50h-50z"/><path class="win" d="M105 200h50v50h-50z"/><path class="win" d="M245 200h50v50h-50z"/>
+  <path class="win" d="M105 290h50v50h-50z"/><path class="win" d="M245 290h50v50h-50z"/><path d="M185 420V370h30v50"/><path d="M105 380h50v40"/><path d="M245 380h50v40"/>
   <path class="thin" d="M360 90V420"/><path class="thin" d="M350 90h20"/><path class="thin" d="M350 420h20"/><path class="thin" d="M30 60H370"/><path class="thin" d="M70 50v20"/><path class="thin" d="M330 50v20"/>
+  <path class="hexc" d="M192.9 8.1 L199.4 11.9 L199.4 19.4 L192.9 23.1 L186.4 19.4 L186.4 11.9 Z"/><path class="hexc" d="M207.1 8.1 L213.6 11.9 L213.6 19.4 L207.1 23.1 L200.6 19.4 L200.6 11.9 Z"/><path class="hexc" d="M214.3 20.5 L220.8 24.2 L220.8 31.8 L214.3 35.5 L207.8 31.8 L207.8 24.2 Z"/><path class="hexc" d="M207.1 32.9 L213.6 36.6 L213.6 44.1 L207.1 47.9 L200.6 44.1 L200.6 36.6 Z"/><path class="hexc" d="M192.9 32.9 L199.4 36.6 L199.4 44.1 L192.9 47.9 L186.4 44.1 L186.4 36.6 Z"/><path class="hexc" d="M185.7 20.5 L192.2 24.2 L192.2 31.8 L185.7 35.5 L179.2 31.8 L179.2 24.2 Z"/>
 </svg></div>
     </div>
     <div class="for" data-stagger>
@@ -259,6 +266,7 @@
     <div class="cols">
       <div>
         <span class="logo-box"><img src="img/betel-logo.png" alt="Betel Construções Inteligentes" width="96" height="40"></span>
+        <p class="tagline">Construindo mais e melhor!</p>
         <p>Incorporadora com ênfase em empreendimentos multifamiliares de metragens compactas, em Joinville/SC.</p>
       </div>
       <div>
