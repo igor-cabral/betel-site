@@ -11,10 +11,13 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:image" content="img/palazzo-fachada.jpg">
 <meta name="theme-color" content="#0b1f4b">
-<link rel="icon" href="img/betel-logo.png">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<script>try{var t=+sessionStorage.getItem("betel-nav");if(t&&Date.now()-t<4000)document.documentElement.classList.add("nav-in");sessionStorage.removeItem("betel-nav")}catch(e){}</script>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<div class="curtain" aria-hidden="true"><img src="img/betel-marca-branca.png" alt="" width="1400" height="305"><i></i></div>
 <a class="skip" href="#conteudo">Ir para o conteúdo</a>
 <header class="site-header">
   <div class="wrap">
@@ -33,6 +36,7 @@
 <main id="conteudo">
 <section class="p-hero" aria-labelledby="h1">
   <div class="hero-media" style="--pos:center 78%"><img src="img/palazzo-fachada.jpg" alt="Fachada ilustrativa do Palazzo Di Fatima Residence, com a placa do empreendimento, caixas de correio e portões" width="1592" height="1125" fetchpriority="high" decoding="async" style=view-transition-name:img-palazzo></div>
+  <img class="hero-hex" src="img/colmeia-dourada.png" alt="" aria-hidden="true" width="900" height="794" decoding="async" fetchpriority="low">
   <div class="wrap">
     <div class="p-hero-grid">
     <div>
@@ -94,7 +98,7 @@
     <p class="fine">Croqui e elevações ilustrativos. Imagens meramente ilustrativas.</p>
   </div>
 </section>
-<section class="sec dark" id="inteligente">
+<section class="sec dark colmeia-bg colmeia-tr" id="inteligente">
   <div class="wrap">
     <p class="dim rv "><span class="n">03</span><span class="ln"></span><span>Edifício inteligente</span></p>
     <div class="split">
@@ -129,7 +133,7 @@
     <p class="fine">Imagens meramente ilustrativas.</p>
   </div>
 </section>
-<section class="sec dark" id="plantas">
+<section class="sec dark colmeia-bg colmeia-bl" id="plantas">
   <div class="wrap">
     <p class="dim rv "><span class="n">05</span><span class="ln"></span><span>Plantas</span></p>
     <div class="sec-head"><h2>Como o espaço <em>se organiza.</em></h2><p>Veja a planta humanizada, com a distribuição dos apartamentos, e a planta térrea com o giardino (área externa) das unidades Garten e as vagas opcionais.</p></div>
@@ -174,7 +178,7 @@
       <div><h3>Nas proximidades</h3><ul class="ticks cols2 stagger-ul"><li>Supermercados e lojas</li><li>Escolas</li><li>Posto de saúde, centros médicos e hospitais</li><li>Restaurantes e bares</li><li>Farmácias e bancos</li><li>Academias</li><li>Centreventos</li><li>SESC</li><li>Morro do Finder</li><li>Casa da Cultura</li><li>Mirante</li><li>Zoobotânico</li></ul></div>
     </div>
   </div>
-</section><section class="sec deep" id="contato-projeto" aria-labelledby="fc">
+</section><section class="sec deep colmeia-bg colmeia-br" id="contato-projeto" aria-labelledby="fc">
   <div class="wrap">
     <p class="dim rv "><span class="n">→</span><span class="ln"></span><span>Próximo passo</span></p>
     <div class="sec-head">
@@ -192,6 +196,7 @@
     <div class="cols">
       <div>
         <span class="logo-box"><img src="img/betel-logo.png" alt="Betel Construções Inteligentes" width="96" height="40"></span>
+        <p class="tagline">Construindo mais e melhor!</p>
         <p>Incorporadora com ênfase em empreendimentos multifamiliares de metragens compactas, em Joinville/SC.</p>
       </div>
       <div>

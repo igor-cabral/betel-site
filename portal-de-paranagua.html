@@ -11,10 +11,13 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:image" content="img/portal-fachada.jpg">
 <meta name="theme-color" content="#0b1f4b">
-<link rel="icon" href="img/betel-logo.png">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<script>try{var t=+sessionStorage.getItem("betel-nav");if(t&&Date.now()-t<4000)document.documentElement.classList.add("nav-in");sessionStorage.removeItem("betel-nav")}catch(e){}</script>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<div class="curtain" aria-hidden="true"><img src="img/betel-marca-branca.png" alt="" width="1400" height="305"><i></i></div>
 <a class="skip" href="#conteudo">Ir para o conteúdo</a>
 <header class="site-header">
   <div class="wrap">
@@ -33,6 +36,7 @@
 <main id="conteudo">
 <section class="p-hero" aria-labelledby="h1">
   <div class="hero-media" style="--pos:center 40%"><img src="img/portal-fachada.jpg" alt="Fachada ilustrativa do Residencial Portal de Paranaguá ao entardecer, edifício de três pavimentos" width="1600" height="900" fetchpriority="high" decoding="async" style=view-transition-name:img-portal></div>
+  <img class="hero-hex" src="img/colmeia-dourada.png" alt="" aria-hidden="true" width="900" height="794" decoding="async" fetchpriority="low">
   <div class="wrap">
     <div class="p-hero-grid">
     <div>
@@ -63,7 +67,7 @@
     </div>
   </div>
 </section>
-<section class="sec dark" id="plantas">
+<section class="sec dark colmeia-bg colmeia-bl" id="plantas">
   <div class="wrap">
     <p class="dim rv "><span class="n">02</span><span class="ln"></span><span>Planta e vagas</span></p>
     <div class="sec-head"><h2>A planta mostra como o espaço <em>se organiza.</em></h2><p>Veja a disposição das unidades, a área externa das unidades térreas e as vagas opcionais de garagem.</p></div>
@@ -92,7 +96,7 @@
       <div><h3>Nas proximidades</h3><ul class="ticks cols2 stagger-ul"><li>Supermercados e lojas</li><li>Escolas</li><li>Posto de saúde</li><li>Restaurantes</li><li>Farmácias</li><li>Bancos</li><li>Academias</li><li>Terminal urbano</li></ul></div>
     </div>
   </div>
-</section><section class="sec deep" id="contato-projeto" aria-labelledby="fc">
+</section><section class="sec deep colmeia-bg colmeia-br" id="contato-projeto" aria-labelledby="fc">
   <div class="wrap">
     <p class="dim rv "><span class="n">→</span><span class="ln"></span><span>Próximo passo</span></p>
     <div class="sec-head">
@@ -110,6 +114,7 @@
     <div class="cols">
       <div>
         <span class="logo-box"><img src="img/betel-logo.png" alt="Betel Construções Inteligentes" width="96" height="40"></span>
+        <p class="tagline">Construindo mais e melhor!</p>
         <p>Incorporadora com ênfase em empreendimentos multifamiliares de metragens compactas, em Joinville/SC.</p>
       </div>
       <div>

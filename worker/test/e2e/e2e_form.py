@@ -47,7 +47,7 @@ async def main():
         check('1c. e-mail traz nome/telefone/e-mail/interesse/mensagem/data/origem', all(x in h for x in ['Maria da Silva','(47) 99999-1234','maria@example.com','Palazzo Di Fatima Residence','2 dormitórios','Brasília','index.html']))
         check('1d. reply_to e assunto', body.get('reply_to')=='maria@example.com' and 'Novo contato pelo site' in body.get('subject',''), body.get('subject'))
         check('1e. formulário limpo e botão travado após sucesso', await pg.input_value('#nome')=='' and await pg.is_disabled('button[type=submit]'))
-        await pg.screenshot(path='form-ok.png')
+        await pg.screenshot(path='/tmp/form-ok.png')
         await ctx.close()
 
         # 2-4. validação
@@ -152,9 +152,9 @@ async def main():
         await pg.tap('#nome'); await pg.keyboard.type('Maria da Silva'); await pg.tap('#telefone'); await pg.keyboard.type('47999991234')
         await pg.select_option('#interesse','vivendas-do-sul'); await pg.tap('#consentimento')
         tgt=await pg.evaluate("(()=>{const r=document.querySelector('button[type=submit]').getBoundingClientRect();return [r.width,r.height]})()")
-        await pg.screenshot(path='form-mobile.png')
+        await pg.screenshot(path='/tmp/form-mobile.png')
         await pg.wait_for_timeout(2700); await pg.tap('button[type=submit]'); await pg.wait_for_selector('#form-status.ok',timeout=5000)
-        await pg.screenshot(path='form-mobile-ok.png')
+        await pg.screenshot(path='/tmp/form-mobile-ok.png')
         check('10. celular: sem rolagem lateral, botão >=48px, envio por toque OK', not ov and tgt[1]>=48 and len(emails())==1, f'botão {tgt[0]:.0f}x{tgt[1]:.0f}')
         await ctx.close()
         await b.close()

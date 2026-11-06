@@ -14,8 +14,6 @@
   --wrap:1240px; --hh:68px; --r:2px;
   --ease:cubic-bezier(.2,.7,.2,1);
 }
-@view-transition{navigation:auto}
-::view-transition-old(root),::view-transition-new(root){animation-duration:.35s}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:120px}
 body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.65;font-size:17px;-webkit-font-smoothing:antialiased}
@@ -436,13 +434,14 @@ form[aria-busy="true"] .btn[disabled]::after{content:"…"}
 
 .status .diag{display:block;margin-top:.7rem;font-size:.75rem;opacity:.75}
 
-/* ===== Página inicial: marca d'água da Betel no bloco azul que revela as imagens, e colmeia de fundo =====
-   Tudo escopado em .home / .colmeia-bg: as páginas dos empreendimentos não mudam. */
-.home .imr::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:url(../img/betel-marca-branca.png) center/64% auto no-repeat;opacity:.4}
-.home .imr>img{position:relative;z-index:1}
+/* ===== Marca d'água da Betel no bloco que revela as imagens, e colmeia de fundo ===== */
+.imr::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:url(../img/betel-marca-branca.png) center/64% auto no-repeat;opacity:.4}
+.imr{position:relative}
+.imr>img{position:relative;z-index:1}
+.plan.imr::before{background-image:url(../img/betel-marca-azul.png);opacity:.16}
 @media (prefers-reduced-motion:no-preference){
   /* o azul com a marca aparece primeiro; a imagem desce por cima dele logo em seguida (só o recorte tem atraso; o zoom do hover não) */
-  .anim .home .imr img{transition:clip-path 1.3s var(--ease) .4s,transform 1.6s var(--ease)}
+  .anim .imr img{transition:clip-path 1.3s var(--ease) .4s,transform 1.6s var(--ease)}
 }
 .colmeia-bg{overflow:hidden}
 .colmeia-bg>.wrap{position:relative;z-index:1}
@@ -457,3 +456,48 @@ form[aria-busy="true"] .btn[disabled]::after{content:"…"}
   .anim .colmeia-bg::after{opacity:0;transform:scale(.9) rotate(-5deg);transition:opacity 1.8s var(--ease),transform 2.4s var(--ease)}
   .anim .colmeia-bg.in::after{opacity:var(--colmeia-o,.12);transform:none}
 }
+
+.colmeia-br::after{right:-9%;bottom:-16%}
+
+/* ===== Marca Betel reforçada ===== */
+::selection{background:var(--gold);color:var(--navy-deep)}
+.dim::before{content:"";flex:none;width:13px;height:15px;background:currentColor;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.hero-hex{position:absolute;z-index:-1;right:-6%;top:5%;width:min(44vw,620px);height:auto;--hx:.16;opacity:var(--hx);pointer-events:none;animation:hexin 2.6s var(--ease) .4s both}
+@keyframes hexin{from{opacity:0;transform:scale(.9) rotate(-6deg)}to{opacity:var(--hx);transform:none}}
+@media (max-width:900px){.hero-hex{width:86vw;right:-34%;top:3%;--hx:.14}}
+.site-footer{position:relative;overflow:hidden}
+.site-footer>.wrap{position:relative;z-index:1}
+.site-footer::before{content:"";position:absolute;right:-5%;bottom:-14%;width:min(86vw,1100px);aspect-ratio:1400/305;background:url(../img/betel-marca-branca.png) center/contain no-repeat;opacity:.07;pointer-events:none}
+.site-footer .tagline{font-family:var(--serif);font-size:1.35rem;color:var(--gold);margin:0 0 .6rem}
+
+/* ===== Hero que reage aos projetos ===== */
+.hero-media img.layer{position:absolute;inset:0;opacity:0;transform:scale(1.07);animation:none;transition:opacity 1.1s var(--ease),transform 3.2s var(--ease)}
+.hero-media img.layer.on{opacity:1;transform:none}
+.hero-media img.layer.on:first-child{animation:settle 2.6s var(--ease) both}
+.hero-media img.lowres{filter:blur(2px) saturate(1.1)}
+.hs{position:relative}
+.hs::before{content:"";position:absolute;left:0;right:0;top:-1px;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease)}
+.hs.on::before{transform:scaleX(1)}
+.hs.on{background:rgba(255,255,255,.07)}
+@media (pointer:coarse){.hs.on small::after{content:" · toque de novo para abrir";color:var(--gold)}}
+
+/* ===== Fachada que se desenha com a rolagem ===== */
+.anim .scrub path{stroke-dasharray:1;stroke-dashoffset:1}
+.bp-art .hexc{stroke-width:1.2}
+
+/* ===== Transição entre páginas: curtain com a marca (funciona em todos os navegadores) ===== */
+.curtain{position:fixed;inset:0;z-index:300;display:grid;place-items:center;align-content:center;gap:1.4rem;background:var(--navy-deep);background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:72px 72px;visibility:hidden;transform:translateY(100%);pointer-events:none;will-change:transform;overflow:hidden}
+.curtain::before{content:"";position:absolute;right:-8%;bottom:-18%;width:min(70vw,640px);aspect-ratio:900/794;background:url(../img/colmeia-dourada.png) center/contain no-repeat;opacity:.16}
+.curtain img{position:relative;width:min(74vw,640px);height:auto;filter:drop-shadow(0 0 .7px #fff) drop-shadow(0 0 .7px #fff)}
+.curtain i{position:relative;display:block;width:min(38vw,240px);height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left}
+.curtain.go{visibility:visible;pointer-events:all;animation:curtain-in .42s cubic-bezier(.7,0,.2,1) both}
+.curtain.go i{animation:bar .4s .08s ease both}
+.nav-in .curtain{visibility:visible;transform:none;animation:curtain-out .8s cubic-bezier(.7,0,.2,1) .2s both}
+.nav-in .curtain i{transform:scaleX(1)}
+@keyframes curtain-in{from{transform:translateY(100%)}to{transform:none}}
+@keyframes curtain-out{from{transform:none}99%{visibility:visible}to{transform:translateY(-100%);visibility:hidden}}
+@keyframes bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.curtain{display:none!important}.hero-hex{animation:none}.hero-media img.layer{transition:none}}
+
+.hero .dim .n{white-space:nowrap}
+@media (max-width:640px){.hero .dim .dim-r{display:none}}

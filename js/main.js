@@ -33,6 +33,7 @@
     if (bar) bar.style.setProperty("--p", Math.min(1, y / max).toFixed(4));
     if (media && !reduce && heroEl && y < heroEl.offsetHeight) media.style.transform = "translate3d(0," + Math.min(48, y * 0.1).toFixed(1) + "px,0)";
     if (mbar) mbar.classList.toggle("show", y > window.innerHeight * 0.6 && !contactVisible);
+    updScrub();
     ticking = false;
   }
   window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }, { passive: true });
@@ -144,6 +145,90 @@
     lb.addEventListener("click", function (e) { if (e.target === lb || e.target.classList.contains("stage")) close(); });
     lb.addEventListener("cancel", function (e) { e.preventDefault(); close(); });
     lb.addEventListener("keydown", function (e) { if (e.key === "ArrowLeft") show(cur - 1); if (e.key === "ArrowRight") show(cur + 1); });
+  }
+
+  /* ---------- Fachada que se desenha conforme a rolagem ---------- */
+  var scrubEl = $(".scrub"), scrubParts = [], scrubWins = [], scrubHex = [], lastP = -1;
+  function clamp01(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  function updScrub() {
+    if (!scrubParts || !scrubParts.length) return; // (frame() roda antes desta seção ser inicializada)
+    var r = scrubEl.getBoundingClientRect(), vh = window.innerHeight;
+    var start = vh * 0.92, end = vh * 0.5 - r.height * 0.5; // começa ao entrar na tela, termina com a fachada no meio dela
+    var p = Math.round(clamp01((start - r.top) / Math.max(1, start - end)) * 400) / 400;
+    if (p === lastP) return;
+    lastP = p;
+    var n = scrubParts.length;
+    scrubParts.forEach(function (el, i) { el.style.strokeDashoffset = (1 - clamp01((p - (i / n) * 0.62) / 0.38)).toFixed(3); });
+    // no fim: as janelas acendem andar por andar e a colmeia da marca se preenche
+    scrubWins.forEach(function (el, k) { el.style.fill = "rgba(240,166,58," + (0.3 * clamp01((p - 0.8 - k * 0.025) / 0.2)).toFixed(3) + ")"; });
+    scrubHex.forEach(function (el, k) { el.style.fill = "rgba(240,166,58," + (0.85 * clamp01((p - 0.9 - k * 0.012) / 0.1)).toFixed(3) + ")"; });
+  }
+  if (scrubEl && document.documentElement.classList.contains("anim")) {
+    scrubParts = $$("path", scrubEl); scrubWins = $$(".win", scrubEl); scrubHex = $$(".hexc", scrubEl);
+    scrubParts.forEach(function (el) { el.setAttribute("pathLength", "1"); });
+    updScrub();
+  }
+
+  /* ---------- Hero que reage aos projetos ---------- */
+  var heroLayers = $$(".hero-media .layer"), heroItems = $$(".hero-strip .hs");
+  if (heroLayers.length > 1 && heroLayers.length === heroItems.length) {
+    var heroCur = 0, heroWanted = 0, heroTimer = null;
+    var coarse = !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+    var loadLayer = function (l) { var src = l.getAttribute("data-src"); if (src) { l.src = src; l.removeAttribute("data-src"); } };
+    var layerReady = function (l) {
+      return new Promise(function (done) {
+        loadLayer(l);
+        if (l.complete && l.naturalWidth) return done();
+        l.addEventListener("load", done, { once: true }); l.addEventListener("error", done, { once: true });
+        setTimeout(done, 900);
+      });
+    };
+    var heroShow = function (i) {
+      heroWanted = i;
+      if (i === heroCur) return;
+      layerReady(heroLayers[i]).then(function () {
+        if (heroWanted !== i) return; // o visitante já foi para outro projeto
+        heroCur = i;
+        heroLayers.forEach(function (l, k) { l.classList.toggle("on", k === i); });
+        heroItems.forEach(function (a, k) { a.classList.toggle("on", k === i); });
+      });
+    };
+    // as outras fotos só baixam depois que a página terminou de carregar (não atrasam a primeira imagem)
+    var saveData = !!(navigator.connection && navigator.connection.saveData);
+    var preload = function () { if (!saveData) setTimeout(function () { heroLayers.forEach(loadLayer); }, 600); };
+    if (document.readyState === "complete") preload(); else window.addEventListener("load", preload);
+
+    heroItems.forEach(function (a, k) {
+      if (!coarse) { // mouse e teclado: pré-visualiza ao passar/focar; o clique abre o projeto
+        a.addEventListener("mouseenter", function () { clearTimeout(heroTimer); heroShow(k); });
+        a.addEventListener("focus", function () { clearTimeout(heroTimer); heroShow(k); });
+      }
+      // toque: o primeiro toque mostra o projeto no hero; tocar de novo no mesmo abre a página
+      a.addEventListener("click", function (e) { if (coarse && !a.classList.contains("on")) { e.preventDefault(); heroShow(k); } });
+    });
+    var strip = $(".hero-strip");
+    if (strip && !coarse) strip.addEventListener("mouseleave", function () { clearTimeout(heroTimer); heroTimer = setTimeout(function () { heroShow(0); }, 900); });
+  }
+
+  /* ---------- Transição entre páginas (curtain com a marca) ---------- */
+  var curtain = $(".curtain");
+  if (curtain && !reduce) {
+    document.addEventListener("click", function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target.closest && e.target.closest("a[href]");
+      if (!a || (a.target && a.target !== "_self") || a.hasAttribute("download")) return;
+      var u; try { u = new URL(a.href, window.location.href); } catch (x) { return; }
+      if (u.protocol !== window.location.protocol || u.origin !== window.location.origin) return; // só páginas do próprio site
+      if (!/(\.html?|\/)$/.test(u.pathname)) return;
+      if (u.pathname === window.location.pathname && u.search === window.location.search) return; // âncora na mesma página
+      e.preventDefault();
+      curtain.classList.add("go");
+      try { sessionStorage.setItem("betel-nav", String(Date.now())); } catch (x) { /* sem armazenamento: só não anima a entrada */ }
+      setTimeout(function () { window.location.href = u.href; }, 400);
+      setTimeout(function () { curtain.classList.remove("go"); }, 3500); // segurança: nunca deixa a tela travada
+    });
+    // voltar pelo histórico (cache do navegador) não pode reabrir o curtain
+    window.addEventListener("pageshow", function (e) { if (e.persisted) curtain.classList.remove("go"); });
   }
 
   /* ---------- Formulário ---------- */
