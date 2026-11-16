@@ -10,11 +10,12 @@ Os textos desta versão foram reescritos a partir do PDF, mas **precisam de apro
 
 ## Contato e institucional
 - [ ] O WhatsApp **(47) 98801-2992** (do PDF) é o número oficial e deve receber os contatos do site?
-- [ ] E-mail de contato oficial.
-- [ ] Endereço do escritório/stand de vendas (se houver) e horário de atendimento.
+- [x] E-mail de contato informado: `betel.incorporadora.comercial@gmail.com` (publicado no rodapé e na seção de contato). Confirmar se também é o canal de privacidade (LGPD) e quem recebe os contatos do formulário.
+- [ ] O endereço informado (Rua Major Theolindo Ferreira Ribas, 1.269, Hauer, Curitiba/PR) é a sede/endereço fiscal. Existe escritório ou stand de vendas em Joinville para visitas? Qual o horário de atendimento? (O site hoje mostra o endereço como "Endereço", sem prometer atendimento presencial.)
 - [ ] Instagram: o QR code do PDF parece indicar `betel.construcoesinteligentes`. Confirmar o perfil para colocar o link.
-- [ ] CNPJ, registro/CRECI e razão social para o rodapé (nada foi inventado).
-- [ ] Texto da política de privacidade / LGPD (hoje o formulário só tem uma caixa de consentimento simples).
+- [x] Razão social, nome fantasia e CNPJ informados (BETEL INCORPORADORA LTDA. · BETEL Construções Inteligentes · 50.744.750/0001-46) e publicados no rodapé.
+- [ ] Registro/CRECI e responsável técnico, se a Betel quiser exibir.
+- [ ] **Política de privacidade:** a página `politica-de-privacidade.html` foi criada com os dados reais do site e da empresa, mas **precisa de revisão jurídica** antes de ficar no ar (bases legais, prazo de guarda, transferência internacional, canal do titular) e da confirmação do e-mail de contato para pedidos dos titulares.
 
 ## Empreendimentos (geral)
 - [ ] O status "Pré-lançamento" (título da seção no PDF) continua valendo para os três?

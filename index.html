@@ -8,6 +8,7 @@
 <meta property="og:title" content="Betel Incorporadora — apartamentos compactos em Joinville/SC">
 <meta property="og:description" content="Betel Incorporadora: apartamentos compactos em Saguaçu, Nova Brasília e Ulysses Guimarães, em Joinville. Conheça Palazzo Di Fatima, Portal de Paranaguá e Vivendas do Sul.">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="BETEL Construções Inteligentes">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:image" content="img/palazzo-hero.jpg">
 <meta name="theme-color" content="#0b1f4b">
@@ -15,6 +16,9 @@
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <script>try{var t=+sessionStorage.getItem("betel-nav");if(t&&Date.now()-t<4000)document.documentElement.classList.add("nav-in");sessionStorage.removeItem("betel-nav")}catch(e){}</script>
 <link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"BETEL Construções Inteligentes","legalName":"BETEL INCORPORADORA LTDA.","taxID":"50.744.750/0001-46","email":"betel.incorporadora.comercial@gmail.com","address":{"@type":"PostalAddress","streetAddress":"Rua Major Theolindo Ferreira Ribas, 1.269 - Hauer","addressLocality":"Curitiba","addressRegion":"PR","postalCode":"81630-100","addressCountry":"BR"}}
+</script>
 </head>
 <body class="home">
 <div class="curtain" aria-hidden="true"><img src="img/betel-marca-branca.png" alt="" width="1400" height="305"><i></i></div>
@@ -40,7 +44,7 @@
     <img class="layer lowres" data-src="img/vivendas-fachada.jpg" alt="" width="580" height="435" decoding="async"></div>
   <img class="hero-hex" src="img/colmeia-dourada.png" alt="" aria-hidden="true" width="900" height="794" decoding="async" fetchpriority="low">
   <div class="wrap hero-copy">
-    <p class="dim"><span class="n">Betel · Joinville/SC</span><span class="ln"></span><span class="dim-r">Construindo mais e melhor<span class="hide-sm"> · Pré-lançamentos</span></span></p>
+    <p class="dim"><span class="n">Pré-lançamentos · Joinville/SC</span><span class="ln"></span><span class="dim-r">Construindo mais e melhor</span></p>
     <h1 id="h1"><span class="ln-m"><span style="--i:0">Seu apartamento</span></span><span class="ln-m"><span style="--i:1">em Joinville, com</span></span><span class="ln-m"><span style="--i:2">o dia a dia <em>por perto.</em></span></span></h1>
     <p class="lead">A Betel incorpora apartamentos compactos de 1 e 2 dormitórios em três bairros da cidade. Para quem quer sair do aluguel, morar no que é seu ou investir.</p>
     <div class="actions">
@@ -230,7 +234,10 @@
         <h2 id="ct">Converse com a <em>equipe da Betel.</em></h2>
         <p class="lead rv">Diga qual projeto chamou sua atenção ou apresente o seu terreno. Se preferir falar direto, o WhatsApp é o caminho mais rápido.</p>
         <a class="wa-big rv" data-wa="Olá! Acessei o site da Betel e gostaria de receber mais informações." href="#"><span data-wa-label>(47) 98801-2992</span> →</a>
-        <p class="muted rv" style="margin-top:1.4rem">Joinville · Santa Catarina</p>
+        <ul class="contact-info rv">
+          <li><span>E-mail</span><a href="mailto:betel.incorporadora.comercial@gmail.com">betel.incorporadora.comercial@gmail.com</a></li>
+          <li><span>Endereço</span><address>BETEL Incorporadora Ltda.<br>Rua Major Theolindo Ferreira Ribas, 1.269<br>Hauer, Curitiba/PR · CEP 81.630-100</address></li>
+        </ul>
       </div>
       <form class="form rv" id="lead-form" novalidate>
         <p class="pending-banner" id="form-pending" hidden><strong>Em configuração:</strong> o envio deste formulário ainda não está conectado. Enquanto isso, use o WhatsApp para falar com a equipe.</p>
@@ -250,7 +257,7 @@
           </select><div class="err" id="err-interesse"></div></div>
         <div class="field"><label for="mensagem">Quer deixar uma mensagem? (opcional)</label><textarea id="mensagem" name="mensagem" rows="3" maxlength="1000" aria-describedby="count-mensagem err-mensagem"></textarea><p class="help" id="count-mensagem">0/1000</p><div class="err" id="err-mensagem"></div></div>
         <div>
-          <label class="check"><input type="checkbox" name="consentimento" id="consentimento"> <span>Concordo em ser contatado(a) pela Betel sobre este assunto e que meus dados sejam usados apenas para esse fim. *</span></label>
+          <label class="check"><input type="checkbox" name="consentimento" id="consentimento"> <span>Concordo em ser contatado(a) pela Betel sobre este assunto e que meus dados sejam usados apenas para esse fim, conforme a <a href="politica-de-privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>. *</span></label>
           <div class="field"><div class="err" id="err-consentimento"></div></div>
         </div>
         <div class="hp" aria-hidden="true"><label for="website">Não preencha este campo</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
@@ -283,18 +290,21 @@
           <li><a href="index.html#sobre">Sobre a Betel</a></li>
           <li><a href="index.html#permuta">Permuta de terrenos</a></li>
           <li><a href="index.html#contato">Contato</a></li>
+          <li><a href="politica-de-privacidade.html">Política de privacidade</a></li>
         </ul>
       </div>
       <div>
         <h4>Contato</h4>
         <ul>
           <li>WhatsApp: <a data-wa="Olá! Acessei o site da Betel e gostaria de receber mais informações." href="#"><span data-wa-label>(47) 98801-2992</span></a></li>
-          <li>Joinville · Santa Catarina</li>
+          <li>E-mail: <a href="mailto:betel.incorporadora.comercial@gmail.com">betel.incorporadora.comercial@gmail.com</a></li>
+          <li><address>Rua Major Theolindo Ferreira Ribas, 1.269<br>Hauer, Curitiba/PR · CEP 81.630-100</address></li>
         </ul>
       </div>
     </div>
     <div class="legal">
-      <p>Imagens meramente ilustrativas. Informações sujeitas a confirmação e alteração sem aviso prévio. © Betel Incorporadora.</p>
+      <p>© BETEL Incorporadora Ltda. · nome fantasia BETEL Construções Inteligentes · CNPJ 50.744.750/0001-46</p>
+      <p>Imagens meramente ilustrativas. Informações sujeitas a confirmação e alteração sem aviso prévio.</p>
       <p class="credit">Desenvolvido por <a href="https://igorcabral.dev.br" target="_blank" rel="noopener" aria-label="Igor Cabral, desenvolvedor do site (abre em nova aba)"><img src="img/igor-cabral-logo-white.png" alt="Igor Cabral" height="22" onerror="this.outerHTML='<span>Igor Cabral</span>'"></a></p>
     </div>
   </div>

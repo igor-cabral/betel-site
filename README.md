@@ -14,6 +14,7 @@ index.html                    Início: hero, projetos, comparativo, sobre, Garte
 palazzo-di-fatima.html        Página do Palazzo Di Fatima Residence
 portal-de-paranagua.html      Página do Residencial Portal de Paranaguá
 vivendas-do-sul.html          Página do Residencial Vivendas do Sul
+politica-de-privacidade.html  Política de Privacidade (LGPD): revisar juridicamente antes de publicar
 css/style.css                 Estilos (cores e medidas no topo, em :root)
 js/config.js                  CONFIGURAÇÃO: WhatsApp e endereço do formulário
 js/main.js                    Animações, menu, galeria, ampliação de imagens e formulário
@@ -63,3 +64,6 @@ Nada foi publicado. Para publicar, envie a pasta inteira a uma hospedagem estát
 
 ## Fora desta versão
 Veja `PENDENCIAS_CLIENTE.md`.
+
+## Dados da empresa
+Razão social, nome fantasia, CNPJ, endereço e e-mail (fornecidos pela Betel) aparecem no rodapé das páginas, na seção de contato da home e na política de privacidade. A home também traz um JSON-LD de organização com esses dados. Para alterar, procure `50.744.750/0001-46` e o e-mail nos arquivos `.html`.

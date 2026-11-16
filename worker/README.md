@@ -57,3 +57,6 @@ Abra o site, F12 → aba **Network**, envie o formulário e clique na requisiç�
 6. **Proteção extra recomendada:** regra de *Rate Limiting* no Cloudflare para o Worker e, se houver spam, o **Cloudflare Turnstile** no formulário (exige criar a chave do Turnstile).
 
 Observação: previews do Cloudflare Pages (`*.pages.dev`) são bloqueados pelo CORS de propósito. Para testar fora do domínio oficial, use o `dev-server`.
+
+## E-mail da Betel informado
+O cliente informou `betel.incorporadora.comercial@gmail.com` como e-mail comercial. **Não foi configurado em lugar nenhum**: o valor de `BETEL_DESTINATION_EMAIL` só deve ser trocado por ele depois de verificar um domínio no Resend e atualizar `RESEND_FROM` (com o remetente de teste, o Resend só entrega ao e-mail da própria conta, conforme a documentação; confirme na documentação atual). Teste primeiro com o seu e-mail e só então aponte para o da Betel.
